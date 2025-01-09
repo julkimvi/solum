@@ -1,0 +1,4 @@
+.card {
+    border: 1px solid #ddd !important; /* Fuerza la aplicación del borde */
+    background-color: #d12020 !important; /* Fuerza el color de fondo */
+}
