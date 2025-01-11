@@ -86,16 +86,35 @@ def register():
 @app.route('/update_user', methods=['GET', 'POST'])
 def update_user():
     if request.method == 'POST':
-        buscar = request.form['buscar']
-        usuario = Usuario.query.filter((Usuario.nombre == buscar) | (Usuario.telefono == buscar)).first()
+        buscar = request.form['buscar'].strip()  # Eliminar espacios adicionales
+        # Realizar búsqueda insensible a mayúsculas/minúsculas y permitir parciales
+        usuario = Usuario.query.filter(
+            (Usuario.nombre.ilike(f"%{buscar}%")) | (Usuario.telefono.ilike(f"%{buscar}%"))
+        ).first()
 
         if usuario:
             return render_template('actualizar_usuario.html', usuario=usuario)
         else:
-            flash("Usuario no encontrado", "error")
+            flash("Usuario no encontrado. Intenta nuevamente.", "error")
             return redirect(url_for('update_user'))
 
     return render_template('actualizar_usuario.html')
+
+
+
+# @app.route('/update_user', methods=['GET', 'POST'])
+# def update_user():
+#     if request.method == 'POST':
+#         buscar = request.form['buscar']
+#         usuario = Usuario.query.filter((Usuario.nombre == buscar) | (Usuario.telefono == buscar)).first()
+
+#         if usuario:
+#             return render_template('actualizar_usuario.html', usuario=usuario)
+#         else:
+#             flash("Usuario no encontrado", "error")
+#             return redirect(url_for('update_user'))
+
+#     return render_template('actualizar_usuario.html')
 
 # Ruta para confirmar la actualización del usuario
 @app.route('/update_user/confirm', methods=['POST'])
@@ -165,10 +184,13 @@ def update_user_confirm():
 @app.route('/consult_service', methods=['GET', 'POST'])
 def consult_service():
     if request.method == 'POST':
-        buscar = request.form['buscar']
+        buscar = request.form['buscar'].strip()  # Eliminar espacios innecesarios
+
         try:
-            # Buscar al usuario por nombre o teléfono
-            usuario = Usuario.query.filter((Usuario.nombre == buscar) | (Usuario.telefono == buscar)).first()
+            # Buscar al usuario por coincidencia parcial en nombre o por teléfono
+            usuario = Usuario.query.filter(
+                (Usuario.nombre.ilike(f"%{buscar}%")) | (Usuario.telefono.ilike(f"%{buscar}%"))
+            ).first()
 
             # Depuración: Verificar si el usuario fue encontrado
             print(f"Usuario encontrado: {usuario}")
@@ -181,17 +203,51 @@ def consult_service():
 
                 if not servicios:
                     flash("No se encontraron servicios asociados a este usuario.", "info")
+
                 return render_template('consultar_servicio.html', usuario=usuario, servicios=servicios)
             else:
                 print("No se encontró ningún usuario con el criterio de búsqueda.")
                 flash("Usuario no encontrado", "error")
                 return render_template('consultar_servicio.html')
+
         except Exception as e:
             print(f"Error al consultar servicios: {e}")
             flash(f"Error al consultar servicios: {str(e)}", "error")
             return redirect(url_for('home'))
 
     return render_template('consultar_servicio.html')
+
+
+# @app.route('/consult_service', methods=['GET', 'POST'])
+# def consult_service():
+#     if request.method == 'POST':
+#         buscar = request.form['buscar']
+#         try:
+#             # Buscar al usuario por nombre o teléfono
+#             usuario = Usuario.query.filter((Usuario.nombre == buscar) | (Usuario.telefono == buscar)).first()
+
+#             # Depuración: Verificar si el usuario fue encontrado
+#             print(f"Usuario encontrado: {usuario}")
+#             if usuario:
+#                 # Buscar servicios asociados al usuario
+#                 servicios = Servicio.query.filter_by(usuario_id=usuario.id).all()
+
+#                 # Depuración: Verificar los servicios encontrados
+#                 print(f"Servicios encontrados para el usuario {usuario.id}: {servicios}")
+
+#                 if not servicios:
+#                     flash("No se encontraron servicios asociados a este usuario.", "info")
+#                 return render_template('consultar_servicio.html', usuario=usuario, servicios=servicios)
+#             else:
+#                 print("No se encontró ningún usuario con el criterio de búsqueda.")
+#                 flash("Usuario no encontrado", "error")
+#                 return render_template('consultar_servicio.html')
+#         except Exception as e:
+#             print(f"Error al consultar servicios: {e}")
+#             flash(f"Error al consultar servicios: {str(e)}", "error")
+#             return redirect(url_for('home'))
+
+#     return render_template('consultar_servicio.html')
 
 
 
@@ -217,17 +273,35 @@ def consult_service():
 @app.route('/update_service', methods=['GET', 'POST'])
 def update_service():
     if request.method == 'POST':
-        buscar = request.form['buscar']
-        usuario = Usuario.query.filter((Usuario.nombre == buscar) | (Usuario.telefono == buscar)).first()
+        buscar = request.form['buscar'].strip()  # Eliminar espacios extra
+        # Realizar búsqueda insensible a mayúsculas/minúsculas
+        usuario = Usuario.query.filter(
+            (Usuario.nombre.ilike(f"%{buscar}%")) | (Usuario.telefono == buscar)
+        ).first()
 
         if usuario:
             servicios = Servicio.query.filter_by(usuario_id=usuario.id).all()
             return render_template('actualizar_servicio.html', usuario=usuario, servicios=servicios)
         else:
-            flash("Usuario no encontrado", "error")
+            flash("Usuario no encontrado. Intenta nuevamente.", "error")
             return redirect(url_for('update_service'))
 
     return render_template('actualizar_servicio.html')
+
+# @app.route('/update_service', methods=['GET', 'POST'])
+# def update_service():
+#     if request.method == 'POST':
+#         buscar = request.form['buscar']
+#         usuario = Usuario.query.filter((Usuario.nombre == buscar) | (Usuario.telefono == buscar)).first()
+
+#         if usuario:
+#             servicios = Servicio.query.filter_by(usuario_id=usuario.id).all()
+#             return render_template('actualizar_servicio.html', usuario=usuario, servicios=servicios)
+#         else:
+#             flash("Usuario no encontrado", "error")
+#             return redirect(url_for('update_service'))
+
+#     return render_template('actualizar_servicio.html')
 
 # Ruta para confirmar la actualización de un servicio
 from datetime import datetime
