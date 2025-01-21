@@ -19,10 +19,29 @@ class Servicio(db.Model):
     fecha = db.Column(db.DateTime, default=datetime.utcnow)
     imagen = db.Column(db.String(255), nullable=True)
 
+class Factura(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    fecha = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    total = db.Column(db.Float, nullable=False)
+    detalles = db.relationship('DetalleFactura', backref='factura', lazy=True)
 
+class DetalleFactura(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    factura_id = db.Column(db.Integer, db.ForeignKey('factura.id'), nullable=False)
+    descripcion = db.Column(db.String(255), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
+    precio = db.Column(db.Float, nullable=False)
+    total = db.Column(db.Float, nullable=False)
 
+class Recordatorio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    descripcion = db.Column(db.String(255), nullable=False)
+    fecha_envio = db.Column(db.DateTime, nullable=False)
+    enviado = db.Column(db.Boolean, default=False)
 
-
+    usuario = db.relationship('Usuario', backref=db.backref('recordatorios', lazy=True))
 
 
 

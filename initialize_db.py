@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import Usuario, Servicio
+from app.models import Usuario, Servicio, Factura, DetalleFactura, Recordatorio
 
 def initialize_database():
     app = create_app()

@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actualizar Usuario</title>
-    <!-- Bootstrap CSS desde CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="text-center text-primary">Actualizar Usuario</h1>
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert alert-dismissible fade show">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
 
         <!-- Formulario para buscar usuario -->
         <form method="POST" action="/update_user" class="mt-4">
@@ -22,34 +34,30 @@
             </div>
         </form>
 
-        {% if usuario_encontrado %}
-        <!-- Formulario para actualizar datos si se encuentra el usuario -->
+        {% if usuario %}
+        <!-- Formulario para actualizar datos -->
         <hr class="my-4">
         <h2 class="text-center text-success">Modificar Datos del Usuario</h2>
         <form method="POST" action="/update_user/confirm" class="mt-4">
-            <!-- Nombre -->
+            <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ usuario_encontrado['nombre'] }}" placeholder="Ingresa un nuevo nombre (opcional)">
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ usuario.nombre }}">
             </div>
-            <!-- Teléfono -->
             <div class="mb-3">
                 <label for="telefono" class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" id="telefono" name="telefono" value="{{ usuario_encontrado['telefono'] }}" placeholder="Ingresa un nuevo teléfono (opcional)">
+                <input type="tel" class="form-control" id="telefono" name="telefono" value="{{ usuario.telefono }}">
             </div>
-            <!-- Dirección -->
             <div class="mb-3">
                 <label for="direccion" class="form-label">Dirección</label>
-                <input type="text" class="form-control" id="direccion" name="direccion" value="{{ usuario_encontrado['direccion'] }}" placeholder="Ingresa una nueva dirección (opcional)">
+                <input type="text" class="form-control" id="direccion" name="direccion" value="{{ usuario.direccion }}">
             </div>
-            <!-- Botón de aceptar -->
             <div class="d-grid">
                 <button type="submit" class="btn btn-success">Aceptar</button>
             </div>
         </form>
         {% endif %}
     </div>
-    <!-- Bootstrap JS desde CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
