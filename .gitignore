@@ -1,5 +1,8 @@
+# Ignorar bases de datos
+instance/*.db
 env/
 __pycache__/
 *.pyc
 *.log
 static/uploads/
+
