@@ -4,5 +4,25 @@ env/
 __pycache__/
 *.pyc
 *.log
-static/uploads/
+static/uploads/*
+
+# Ignorar variables de entorno
+.env
+
+# Ignorar bases de datos
+instance/*.db
+
+# Ignorar directorios
+migrations/
+.vscode/
+static/facturas/
+
+# Ignorar otros archivos específicos
+test_twilio.py
+
+# Ignorar Twilio helper con datos sensibles
+utils/twilio_helper.py
+
+# Ignorar Scheduler con datos sensibles
+utils/scheduler.py
 
